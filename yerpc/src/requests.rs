@@ -1,4 +1,4 @@
-use async_mutex::Mutex;
+use async_lock::Mutex;
 use futures::channel::oneshot;
 use futures_util::{Future, Sink};
 use serde::Serialize;

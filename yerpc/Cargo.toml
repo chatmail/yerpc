@@ -24,7 +24,7 @@ log = "0.4.16"
 futures = "0.3.21"
 futures-util = "0.3.21"
 async-channel = "1.6.1"
-async-mutex = "1.4.0"
+async-lock = "3.4.0"
 
 # type generating dependencies
 typescript-type-def = { version = "0.5.3", features = ["json_value"] }
