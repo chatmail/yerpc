@@ -48,7 +48,7 @@ mod tests {
         let tcp = TcpStream::connect("127.0.0.1:12345")
             .await
             .expect("Failed to connect");
-        let url = url::Url::parse("ws://localhost:12345/rpc").unwrap();
+        let url = "ws://localhost:12345/rpc";
         let (mut stream, response) = client_async(url, tcp)
             .await
             .expect("Client failed to connect");

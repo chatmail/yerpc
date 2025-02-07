@@ -17,25 +17,25 @@ name = "generate-base-types"
 
 [dependencies]
 yerpc_derive = { path  = "../yerpc-derive", version = "0.6" }
-async-trait = "0.1.53"
-serde = { version = "1.0.136", features = ["derive"] }
-serde_json = "1.0.79"
-log = "0.4.16"
-futures = "0.3.21"
-futures-util = "0.3.21"
-async-channel = "1.6.1"
+async-trait = "0.1.86"
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
+log = "0.4.25"
+futures = "0.3.31"
+futures-util = "0.3.31"
+async-channel = "1.9.0"
 async-mutex = "1.4.0"
 
 # type generating dependencies
-typescript-type-def = { version = "0.5.3", features = ["json_value"] }
-schemars = { version = "0.8.11", optional = true }
+typescript-type-def = { version = "0.5.13", features = ["json_value"] }
+schemars = { version = "0.8.21", optional = true }
 
 # optional dependencies
-anyhow = { version = "1.0.57", optional = true }
-axum = { version = "0.7.1", features = ["ws"], optional = true }
-tokio-tungstenite = { version = "0.20", optional = true }
-tokio = { version = "1.19.2", features = ["rt", "macros"], optional = true }
-tracing = { version = "0.1.35", optional = true }
+anyhow = { version = "1.0.95", optional = true }
+axum = { version = "0.8.1", features = ["ws"], optional = true }
+tokio-tungstenite = { version = "0.26.1", optional = true }
+tokio = { version = "1.43.0", features = ["rt", "macros"], optional = true }
+tracing = { version = "0.1.41", optional = true }
 
 [features]
 anyhow_expose = ["anyhow"]
@@ -44,8 +44,8 @@ support-tungstenite = ["tokio", "tokio-tungstenite", "anyhow"]
 openrpc = ["schemars", "yerpc_derive/openrpc"]
 
 [dev-dependencies]
-anyhow = "1.0.57"
-axum = { version = "0.7.1", features = ["ws"] }
-tokio-tungstenite = { version = "0.20" }
-tokio = { version = "1.19.2", features = ["rt", "macros"] }
-url = "2.2.2"
+anyhow = "1.0.95"
+axum = { version = "0.8.1", features = ["ws"] }
+tokio-tungstenite = { version = "0.26.1" }
+tokio = { version = "1.43.0", features = ["rt", "macros"] }
+url = "2.5.4"

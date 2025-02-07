@@ -37,7 +37,7 @@ where
         tokio::select! {
             message = out_rx.next() => {
                     let message = serde_json::to_string(&message)?;
-                    stream.send(Message::Text(message)).await?;
+                    stream.send(Message::Text(message.into())).await?;
             }
             message = stream.next() => {
                 match message {
