@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Add `RpcSession::handle_incoming_parsed`
+  and `RpcSession::process_incoming_parsed`
+
 ## 0.6.0 - 2024-07-06
 
 - ts client: fix memory leak

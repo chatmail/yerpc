@@ -56,6 +56,8 @@ impl<T: RpcServer> RpcSession<T> {
     ///
     /// Handles incoming requests and notifications,
     /// returns a response if any.
+    ///
+    /// See also [`process_incoming_parsed`].
     pub async fn process_incoming(&self, input: &str) -> Option<Message> {
         let message: Message = match serde_json::from_str(input) {
             Ok(message) => message,
@@ -66,7 +68,11 @@ impl<T: RpcServer> RpcSession<T> {
                 )));
             }
         };
-
+        self.process_incoming_parsed(message).await
+    }
+    /// Same as [`process_incoming`], but accepts a parsed [`Message`]
+    /// instead of a string.
+    pub async fn process_incoming_parsed(&self, message: Message) -> Option<Message> {
         match message {
             Message::Request(request) => {
                 let params = request.params.map(Params::into_value).unwrap_or_default();
@@ -101,8 +107,17 @@ impl<T: RpcServer> RpcSession<T> {
     /// Blocks until request handler finishes.
     /// Spawn a task if you want to run the request handler
     /// concurrently.
+    ///
+    /// See also [`handle_incoming_parsed`].
     pub async fn handle_incoming(&self, input: &str) {
         if let Some(response) = self.process_incoming(input).await {
+            let _ = self.client.tx(response).await;
+        }
+    }
+    /// Same as [`handle_incoming`], but accepts a parsed [`Message`]
+    /// instead of a string.
+    pub async fn handle_incoming_parsed(&self, message: Message) {
+        if let Some(response) = self.process_incoming_parsed(message).await {
             let _ = self.client.tx(response).await;
         }
     }
