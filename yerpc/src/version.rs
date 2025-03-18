@@ -49,7 +49,7 @@ impl<'a> Deserialize<'a> for Version {
 
 struct VersionVisitor;
 
-impl<'a> Visitor<'a> for VersionVisitor {
+impl Visitor<'_> for VersionVisitor {
     type Value = Version;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
