@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 0.7.0
 
 - Add `RpcSession::handle_incoming_parsed`
   and `RpcSession::process_incoming_parsed`
+- Replace async-mutex with async-lock
 
 ## 0.6.0 - 2024-07-06
 
