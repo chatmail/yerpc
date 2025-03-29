@@ -29,7 +29,7 @@ pub async fn handle_rpc<T: RpcServer>(
         while let Some(message) = out_rx.next().await {
             let message = serde_json::to_string(&message)?;
             tracing::trace!("RPC send {}", message);
-            sender.send(Message::Text(message)).await?;
+            sender.send(Message::Text(message.into())).await?;
         }
         Ok(())
     });
