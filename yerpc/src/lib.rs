@@ -269,7 +269,7 @@ impl From<anyhow::Error> for Error {
     fn from(error: anyhow::Error) -> Self {
         Self {
             code: -1,
-            message: format!("anyhow: {:#}", error),
+            message: format!("{:#}", error),
             data: None,
         }
     }
