@@ -13,13 +13,13 @@ use emitter::EventEmitter;
 
 use tide_websockets::{Message as WsMessage, WebSocket};
 
-#[derive(Serialize, Deserialize, TypeDef, Clone, Debug)]
+#[derive(Serialize, Deserialize, TypeDef, Clone, Debug, schemars::JsonSchema)]
 struct User {
     name: String,
     color: String,
 }
 
-#[derive(Serialize, Deserialize, TypeDef, Clone, Debug)]
+#[derive(Serialize, Deserialize, TypeDef, Clone, Debug, schemars::JsonSchema)]
 struct ChatMessage {
     content: String,
     user: User,
