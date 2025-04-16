@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.7.0
+## 0.6.4 - 2025-04-17
+
+- Remove 'anyhow:' prefix from errors.
+
+## 0.6.3 - 2025-03-29
 
 - Add `RpcSession::handle_incoming_parsed`
   and `RpcSession::process_incoming_parsed`
