@@ -21,12 +21,14 @@ export abstract class BaseTransport<T = {}>
 {
   private _requests: RequestMap = new Map();
   private _requestId = 0;
-  _send(_message: Message): void {
-    throw new Error("_send method not implemented");
-  }
+  abstract _send(_message: Message): void
 
   close() {}
 
+  /**
+   * This must be invoked by the implementor of {@link BaseTransport},
+   * on incoming messages.
+   */
   protected _onmessage(message: Message): void {
     if ((message as Request).method) {
       const request = message as Request;
