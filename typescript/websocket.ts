@@ -1,4 +1,3 @@
-import WebSocket from "isomorphic-ws";
 import { Message } from "./jsonrpc.js";
 import { BaseTransport } from "./client.js";
 import { Emitter, EventsT } from "./util/emitter.js";
@@ -9,12 +8,19 @@ type WebsocketOptions = {
   maxReconnectInterval: number;
 };
 
-export type WebSocketErrorEvent = WebSocket.ErrorEvent;
+type WSMessageEvent = Parameters<
+  Exclude<typeof WebSocket.prototype.onmessage, null>
+>[0];
+type WSErrorEvent = Parameters<
+  Exclude<typeof WebSocket.prototype.onerror, null>
+>[0];
+
+export type WebSocketErrorEvent = WSErrorEvent;
 
 export interface WebsocketEvents extends EventsT {
   connect: () => void;
   disconnect: () => void;
-  error: (error: WebSocket.ErrorEvent) => void;
+  error: (error: WSErrorEvent) => void;
 }
 
 export class WebsocketTransport extends BaseTransport<WebsocketEvents> {
@@ -27,7 +33,7 @@ export class WebsocketTransport extends BaseTransport<WebsocketEvents> {
   }
   constructor(public url: string, options?: WebsocketOptions) {
     super();
-    const onmessage = (event: WebSocket.MessageEvent) => {
+    const onmessage = (event: WSMessageEvent) => {
       const message: Message = JSON.parse(event.data as string);
       this._onmessage(message);
     };
@@ -35,7 +41,7 @@ export class WebsocketTransport extends BaseTransport<WebsocketEvents> {
 
     this._socket.on("connect", () => this.emit("connect"));
     this._socket.on("disconnect", () => this.emit("disconnect"));
-    this._socket.on("error", (error: WebSocket.ErrorEvent) =>
+    this._socket.on("error", (error: WSErrorEvent) =>
       this.emit("error", error)
     );
   }
@@ -59,12 +65,12 @@ class ReconnectingWebsocket extends Emitter<WebsocketEvents> {
   private _connected = false;
   private _reconnectAttempts = 0;
 
-  onmessage: (event: WebSocket.MessageEvent) => void;
+  onmessage: (event: WSMessageEvent) => void;
   closed = false;
 
   constructor(
     public url: string,
-    onmessage: (event: WebSocket.MessageEvent) => void,
+    onmessage: (event: WSMessageEvent) => void,
     options?: WebsocketOptions
   ) {
     super();
