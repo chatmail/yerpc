@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 # Unreleased
 - typescript-client: Remove dependencies on WebSockets npm packages (`@types/ws`, `ws` and `isomorphic-ws`).
 - typescript-client: Set the minimum Node.js version to `22`, because that's the version where support for the standard WebSockets was stabilized.
+- Add `Cargo.lock` to the repo
+
 
 ## 0.6.4 - 2025-04-17
 
