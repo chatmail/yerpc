@@ -11,14 +11,14 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Item};
 
+mod bindings;
 #[cfg(feature = "openrpc")]
 mod openrpc;
 mod parse;
 mod rpc;
-mod ts;
+pub(crate) use bindings::generate_bindings_impl;
 pub(crate) use parse::{Inputs, RpcInfo};
 pub(crate) use rpc::generate_rpc_impl;
-pub(crate) use ts::generate_typescript_generator;
 pub(crate) mod util;
 
 /// Generates the jsonrpc handler and types.
@@ -61,7 +61,7 @@ pub fn rpc(attr: TokenStream, tokens: TokenStream) -> TokenStream {
             quote! {
                 #item
                 #rpc_impl
-                #ts_impl
+                #bindings_impl
                 #openrpc_impl
             }
         }

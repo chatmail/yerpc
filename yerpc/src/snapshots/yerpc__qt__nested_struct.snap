@@ -1,0 +1,65 @@
+---
+source: yerpc/src/qt.rs
+expression: out
+---
+
+inline QJsonValue toJson(const uint8_t &o) { return static_cast<double>(o); }
+inline bool tryFromJson(const QJsonValue &v, uint8_t &out) {
+    if (!v.isDouble()) return false;
+    out = static_cast<uint8_t>(v.toDouble());
+    return true;
+}
+inline QJsonValue toJson(const QList<uint8_t> &o) {
+    QJsonArray a;
+    for (const auto &i : o) a.append(toJson(i));
+    return a;
+}
+inline bool tryFromJson(const QJsonValue &v, QList<uint8_t> &out) {
+    if (!v.isArray()) return false;
+    for (const auto &e : v.toArray()) {
+        uint8_t val;
+        if (!tryFromJson(e, val)) return false;
+        out.append(val);
+    }
+    return true;
+}
+
+inline QJsonValue toJson(const int8_t &o) { return static_cast<double>(o); }
+inline bool tryFromJson(const QJsonValue &v, int8_t &out) {
+    if (!v.isDouble()) return false;
+    out = static_cast<int8_t>(v.toDouble());
+    return true;
+}
+inline QJsonValue toJson(const QMap<QString, int8_t> &o) {
+    QJsonObject j;
+    for (auto it = o.constKeyValueBegin(); it != o.constKeyValueEnd(); ++it)
+        j[it->first] = toJson(it->second);
+    return j;
+}
+inline bool tryFromJson(const QJsonValue &v, QMap<QString, int8_t> &out) {
+    if (!v.isObject()) return false;
+    auto o = v.toObject();
+    for (auto it = o.constBegin(); it != o.constEnd(); ++it) {
+        int8_t val;
+        if (!tryFromJson(it.value(), val)) return false;
+        out[it.key()] = val;
+    }
+    return true;
+}
+struct Foo {
+  QList<uint8_t> bar;
+  QMap<QString, int8_t> baz;
+};
+inline QJsonValue toJson(const Foo &o) {
+  QJsonObject j;
+  j["bar"] = toJson(o.bar);
+  j["baz"] = toJson(o.baz);
+  return j;
+}
+inline bool tryFromJson(const QJsonValue &v, Foo &out) {
+  if (!v.isObject()) return false;
+  QJsonObject obj = v.toObject();
+  if (!tryFromJson(obj["bar"], out.bar)) return false;
+  if (!tryFromJson(obj["baz"], out.baz)) return false;
+  return true;
+}
