@@ -127,20 +127,13 @@ pub(crate) fn generate_doc(info: &RpcInfo) -> TokenStream {
     }
 }
 
-pub(crate) fn generate_openrpc_generator(info: &RpcInfo, outdir_path: &String) -> TokenStream {
-    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-    let outdir = std::path::PathBuf::from(&manifest_dir).join(outdir_path);
-    let outdir = outdir.to_str().unwrap();
-
+pub(crate) fn generate_openrpc_generator(info: &RpcInfo) -> TokenStream {
     let doc_spec = generate_doc(info);
 
     quote! {
         /// Generate OpenRPC description for the JSON-RPC API.
-        #[cfg(test)]
-        #[test]
-        fn generate_openrpc_document() {
+        pub fn write_openrpc(outdir: &::std::path::Path) {
             let doc = #doc_spec;
-            let outdir = ::std::path::Path::new(#outdir);
             let json = ::serde_json::to_string_pretty(&doc).expect("Failed to serialize OpenRPC document into JSON.");
             ::std::fs::create_dir_all(&outdir).expect(&format!("Failed to create directory `{}`", outdir.display()));
             ::std::fs::write(&outdir.join("openrpc.json"), &json).expect("Failed to write OpenRPC document");

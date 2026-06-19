@@ -115,7 +115,7 @@ impl Session {
     }
 }
 
-#[rpc(ts_outdir = "typescript/generated", openrpc_outdir = ".")]
+#[rpc()]
 impl Session {
     /// Send a chat message.
     ///
@@ -162,4 +162,11 @@ async fn handler(
 ) -> Response {
     let (session, out_channel) = backend.session(addr);
     handle_ws_rpc(ws, out_channel, session).await
+}
+
+#[test]
+fn write_files() {
+    use std::path::Path;
+    write_ts_bindings(Path::new("typescript/generated"));
+    write_openrpc(Path::new("."));
 }

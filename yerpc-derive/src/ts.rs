@@ -2,7 +2,7 @@ use crate::{util::extract_result_ty, Inputs, RpcInfo};
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::quote;
-pub(crate) fn generate_typescript_generator(info: &RpcInfo, outdir_path: &String) -> TokenStream {
+pub(crate) fn generate_typescript_generator(info: &RpcInfo) -> TokenStream {
     let mut gen_types = vec![];
     let mut gen_methods = vec![];
     for method in &info.methods {
@@ -56,10 +56,6 @@ pub(crate) fn generate_typescript_generator(info: &RpcInfo, outdir_path: &String
         ));
     }
 
-    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-    let outdir = std::path::PathBuf::from(&manifest_dir).join(outdir_path);
-    let outdir = outdir.to_str().unwrap();
-
     let ts_base = include_str!("client.ts");
 
     let mut all_types: Vec<String> = gen_types
@@ -72,17 +68,13 @@ pub(crate) fn generate_typescript_generator(info: &RpcInfo, outdir_path: &String
     let all_types: Vec<TokenStream> = all_types.into_iter().map(|s| s.parse().unwrap()).collect();
 
     quote! {
-        /// Generate typescript bindings for the JSON-RPC API.
-        #[cfg(test)]
-        #[test]
-        fn generate_ts_bindings() {
+        /// Write typescript bindings for the JSON-RPC API.
+        pub fn write_ts_bindings(outdir: &::std::path::Path) {
             use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
             use ::yerpc::typescript::{typedef_to_expr_string, export_types_to_file, Method};
             use ::std::{fs, path::Path};
             use ::std::io::Write;
 
-            // Create output directory.
-            let outdir = Path::new(#outdir);
             fs::create_dir_all(&outdir).expect(&format!("Failed to create directory `{}`", outdir.display()));
 
             // Create helper type with all exported types.
