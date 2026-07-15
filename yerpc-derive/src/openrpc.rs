@@ -103,7 +103,7 @@ pub(crate) fn generate_doc(info: &RpcInfo) -> TokenStream {
         .iter()
         .map(|method| generate_method(method, definitions_ident.clone()))
         .collect::<Vec<_>>();
-    let title = format!("{}", &info.self_ty.to_token_stream());
+    let title = format!("{}", info.self_ty.to_token_stream());
     let info = quote! {
         ::yerpc::openrpc::Info {
             version: "1.0.0".to_string(),
