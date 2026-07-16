@@ -129,7 +129,7 @@ fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
     let qt_base = include_str!("client.hpp");
     quote! {
         /// Generate typescript bindings for the JSON-RPC API.
-        pub fn generate_qt_bindings(outdir: &::std::path::Path, root_namespace: &str) {
+        pub fn write_qt_bindings(outdir: &::std::path::Path, root_namespace: &str) {
             use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
             use ::yerpc::{method::Method, qt::export_types_to_file};
             use ::std::{fs, path::Path};
