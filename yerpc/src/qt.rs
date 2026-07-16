@@ -474,7 +474,7 @@ fn test_tagged_enum() {
 }
 
 impl Method {
-    pub fn to_string_qt(&self /* root_namespace: Option<&str> */) -> String {
+    pub fn to_string_qt(&self) -> String {
         let (args, call) = if !self.is_positional {
             if let Some((name, ty)) = self.args.first() {
                 (

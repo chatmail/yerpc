@@ -206,7 +206,7 @@ fn ctype_from_expr(expr: &ts::TypeExpr, name: Option<String>) -> TypeInfo {
                 }
                 TypeInfo::Map(Box::new(ctype_from_expr(&n.generic_args[1], None)))
             }
-            _ => unimplemented!(), // other => Type::Struct(other.to_string()),
+            _ => unimplemented!(),
         },
         ts::TypeExpr::Array(a) => {
             if let Some(name) = name {
@@ -228,7 +228,7 @@ fn ctype_from_expr(expr: &ts::TypeExpr, name: Option<String>) -> TypeInfo {
             } else if non_null.len() == 1 {
                 ctype_from_expr(non_null[0], None)
             } else {
-                TypeInfo::Void // TODO: tagged union
+                TypeInfo::Void
             }
         }
         ts::TypeExpr::Tuple(t) if t.elements.is_empty() => TypeInfo::Void,
