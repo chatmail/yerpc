@@ -2,7 +2,7 @@ use crate::{util::extract_result_ty, Inputs, RpcInfo};
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::quote;
-pub(crate) fn generate_typescript_generator(info: &RpcInfo) -> TokenStream {
+pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
     let mut gen_types = vec![];
     let mut gen_methods_ts = vec![];
     let mut gen_methods_qt = vec![];
@@ -62,8 +62,6 @@ pub(crate) fn generate_typescript_generator(info: &RpcInfo) -> TokenStream {
         ));
     }
 
-    let ts_base = include_str!("client.ts");
-
     let mut all_types: Vec<String> = gen_types
         .clone()
         .into_iter()
@@ -73,23 +71,15 @@ pub(crate) fn generate_typescript_generator(info: &RpcInfo) -> TokenStream {
     all_types.dedup();
     let all_types: Vec<TokenStream> = all_types.into_iter().map(|s| s.parse().unwrap()).collect();
 
-    let ts = if let Some(outdir) = ts_outdir {
-        ts_impl(outdir, &all_types, &gen_methods_ts)
-    } else {
-        quote!(None)
-    };
-    let qt = if let Some(outdir) = qt_outdir {
-        qt_impl(outdir, &all_types, &gen_methods_qt)
-    } else {
-        quote!()
-    };
+    let ts = ts_impl(&all_types, &gen_methods_ts);
+    let qt = qt_impl(&all_types, &gen_methods_qt);
     quote! {
         #ts
         #qt
     }
 }
 
-fn ts_impl(outdir: &str, all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
+fn ts_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
     let ts_base = include_str!("client.ts");
 
     quote! {
@@ -135,20 +125,15 @@ fn ts_impl(outdir: &str, all_types: &[TokenStream], gen_methods: &[TokenStream])
     }
 }
 
-fn qt_impl(outdir: &str, all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
+fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
     let qt_base = include_str!("client.hpp");
     quote! {
         /// Generate typescript bindings for the JSON-RPC API.
-        pub fn generate_qt_bindings(root_namespace: &str) {
+        pub fn generate_qt_bindings(outdir: &::std::path::Path, root_namespace: &str) {
             use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
             use ::yerpc::{method::Method, qt::export_types_to_file};
             use ::std::{fs, path::Path};
             use ::std::io::Write;
-
-            // Create output directory.
-            let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-            let outdir = std::path::PathBuf::from(&manifest_dir).join(#outdir);
-            fs::create_dir_all(&outdir).expect(&format!("Failed to create directory `{}`", outdir.display()));
 
             // Create helper type with all exported types.
             // #(#gen_definitions)*

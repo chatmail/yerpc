@@ -49,7 +49,7 @@ pub fn rpc(attr: TokenStream, tokens: TokenStream) -> TokenStream {
             };
 
             let info = RpcInfo::from_impl(&attr_args, input);
-            let ts_impl = generate_typescript_generator(&info);
+            let bindings_impl = generate_bindings_impl(&info);
             let rpc_impl = generate_rpc_impl(&info);
 
             #[cfg(feature = "openrpc")]
