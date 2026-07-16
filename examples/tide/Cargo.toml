@@ -24,4 +24,4 @@ schemars = "0.8.22"
 async-trait = "0.1.53"
 typescript-type-def = { version = "0.5.13", features = ["json_value"] }
 async-broadcast = "0.4.0"
-yerpc = { path  = "../../yerpc", features = ["anyhow"]}
+yerpc = { path  = "../../yerpc", features = ["anyhow", "openrpc"]}

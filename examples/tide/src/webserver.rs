@@ -104,7 +104,7 @@ impl Session {
     }
 }
 
-#[rpc(ts_outdir = "typescript/generated")]
+#[rpc()]
 impl Session {
     /// Send a chat message.
     ///
@@ -161,4 +161,11 @@ async fn main() -> Result<(), std::io::Error> {
     app.listen("127.0.0.1:20808").await?;
 
     Ok(())
+}
+
+#[test]
+fn write_files() {
+    use std::path::Path;
+    write_ts_bindings(Path::new("typescript/generated"));
+    write_openrpc(Path::new("."));
 }

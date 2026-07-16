@@ -1,0 +1,82 @@
+{
+  "openrpc": "1.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Session"
+  },
+  "methods": [
+    {
+      "name": "send",
+      "description": " Send a chat message.\n\n Pass the message to send.",
+      "params": [
+        {
+          "name": "message",
+          "schema": {
+            "$ref": "#/components/schemas/ChatMessage"
+          },
+          "required": true
+        }
+      ],
+      "result": {
+        "name": "SendResult",
+        "schema": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "required": true
+      },
+      "paramStructure": "by-position"
+    },
+    {
+      "name": "list",
+      "description": " List chat messages.",
+      "params": [],
+      "result": {
+        "name": "ListResult",
+        "schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ChatMessage"
+          }
+        },
+        "required": true
+      },
+      "paramStructure": "by-position"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ChatMessage": {
+        "type": "object",
+        "required": [
+          "content",
+          "user"
+        ],
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "color",
+          "name"
+        ],
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
