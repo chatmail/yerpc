@@ -128,7 +128,7 @@ fn ts_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
 fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
     let qt_base = include_str!("client.hpp");
     quote! {
-        /// Generate typescript bindings for the JSON-RPC API.
+        /// Generate qt bindings for the JSON-RPC API.
         pub fn write_qt_bindings(outdir: &::std::path::Path, root_namespace: &str) {
             use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
             use ::yerpc::{method::Method, qt::export_types_to_file};
@@ -139,7 +139,7 @@ fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
             // #(#gen_definitions)*
             #[derive(TypeDef)]
             struct __AllTyps(#(#all_types),*);
-            // Write typescript types to file.
+            // Write qt types to file.
             export_types_to_file::<__AllTyps>(&outdir.join("types.hpp"), root_namespace).expect("Failed to write Qt out");
             // remove __AllTyps type from output,
             // it's only used as a woraround to export all types and is not needed anymore now
