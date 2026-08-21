@@ -42,7 +42,7 @@ pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
                 quote!(Some(&<#ty as TypeDef>::INFO))
             }
         };
-        let ts_name = method.name.to_case(Case::Camel);
+        let rpc_name_camel = method.name.to_case(Case::Camel);
         let rpc_name = &method.name;
         let is_notification = method.is_notification;
         let docs = if let Some(docs) = &method.docs {
@@ -52,12 +52,12 @@ pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
         };
         gen_methods_ts.push(quote!(
                 let args = vec![#(#gen_args),*];
-                let method = Method::new(#ts_name, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
+                let method = Method::new(#rpc_name_camel, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
                 out.push_str(&method.to_string_ts(root_namespace));
         ));
         gen_methods_qt.push(quote!(
                 let args = vec![#(#gen_args),*];
-                let method = Method::new(#ts_name, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
+                let method = Method::new(#rpc_name_camel, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
                 out.push_str(&method.to_string_qt());
         ));
     }

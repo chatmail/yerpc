@@ -75,7 +75,7 @@ impl Method {
         };
         format!(
             "{}\n  public {}({}): {} {{\n    return (this._transport.{}('{}', {} as RPC.Params)) as {};\n  }}\n\n",
-            docs, self.ts_name, args, output, inner_method, self.rpc_name, call, output
+            docs, self.rpc_name_camel, args, output, inner_method, self.rpc_name, call, output
         )
     }
 }

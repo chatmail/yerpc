@@ -523,7 +523,7 @@ impl Method {
         } else {
             "".into()
         };
-        let qt_name = &self.ts_name;
+        let qt_name = &self.rpc_name_camel;
         let rpc_name = &self.rpc_name;
         format!(
             r#"{docs}
