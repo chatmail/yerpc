@@ -15,8 +15,8 @@ namespace #root_namespace {
 
 template<typename T>
 struct [[nodiscard]] Result {
-    T result;
-    QString error_message;
+    T result();
+    QString error_message();
     int32_t error_code = 0;
 
     /**
@@ -35,7 +35,7 @@ struct [[nodiscard]] Result {
 
 template<>
 struct [[nodiscard]] Result<void> {
-    QString error_message;
+    QString error_message();
     int32_t error_code = 0;
 
     /**
