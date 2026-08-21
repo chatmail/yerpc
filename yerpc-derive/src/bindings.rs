@@ -99,7 +99,7 @@ fn ts_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
             // Write typescript types to file.
             export_types_to_file::<__AllTyps>(&outdir.join("types.ts"), None).expect("Failed to write TS out");
             // remove __AllTyps ts type from output,
-            // it's only used as a woraround to export all types and is not needed anymore now
+            // it's only used as a workaround to export all types and is not needed anymore now
             let new_content = {
                 let string =
                     ::std::fs::read_to_string(&outdir.join("types.ts")).expect("Failed to find TS out");
@@ -115,7 +115,7 @@ fn ts_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
                 .expect("removing __AllTyps from TS failed");
             export_types_to_file::<::yerpc::Message>(&outdir.join("jsonrpc.ts"), None).expect("Failed to write TS out");
 
-            // // Generate a raw client.
+            // Generate a raw client.
             let root_namespace = Some("T");
             let mut out = String::new();
             #(#gen_methods)*
@@ -142,7 +142,7 @@ fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
             // Write qt types to file.
             export_types_to_file::<__AllTyps>(&outdir.join("types.hpp"), root_namespace).expect("Failed to write Qt out");
             // remove __AllTyps type from output,
-            // it's only used as a woraround to export all types and is not needed anymore now
+            // it's only used as a workaround to export all types and is not needed anymore now
             let new_content = {
                 let string =
                     ::std::fs::read_to_string(&outdir.join("types.hpp")).expect("Failed to find Qt out");
@@ -157,7 +157,7 @@ fn qt_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStrea
                 .write_all(new_content.as_bytes())
                 .expect("removing __AllTyps from Qt failed");
 
-            // // Generate a raw client.
+            // Generate a raw client.
             let mut out = String::new();
             #(#gen_methods)*
             let qt_header = #qt_base.replace("#root_namespace", root_namespace).replace("#methods", &out);
