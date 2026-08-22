@@ -67,7 +67,6 @@ static Result<QJsonValue> parseResult(const QJsonObject& val) {
 class Transport {
 public:
     virtual std::future<Result<QJsonValue>> send(const QString method, const QJsonValue request) = 0;
-    // virtual void send_notify(const QJsonValue request) = 0; not implemented
 };
 
 class RawClient {
