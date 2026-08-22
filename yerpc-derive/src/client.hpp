@@ -53,9 +53,11 @@ struct [[nodiscard]] Result<void> {
 static Result<QJsonValue> parseResult(const QJsonObject& val) {
   if (val.contains("error")) {
     QJsonObject err = val["error"].toObject();
-    if (err.isEmpty())
+    QJsonValue error_message = err["message"];
+    int error_code = err["code"].toInt();
+    if (!error_message.isString() || error_code == 0)
       return {{}, "Invalid error in response: " + QJsonDocument(val).toJson(QJsonDocument::Compact), -32700};
-    return {{}, err["message"].toString(), err["code"].toInt()};
+    return {{}, error_message.toString(), error_code};
   }
   if (!val.contains("result"))
     return {{}, "Neither error nor result in response: " + QJsonDocument(val).toJson(QJsonDocument::Compact), -32700};
