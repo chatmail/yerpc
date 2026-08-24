@@ -100,7 +100,7 @@ class RawClient {
         });
   }
 public:
-  RawClient(std::unique_ptr<Transport> t) : transport_(std::move(t)) {}
+  RawClient(std::unique_ptr<Transport> t) : transport_{std::move(t)} {}
 
 #methods
 };
