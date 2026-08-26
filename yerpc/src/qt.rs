@@ -287,7 +287,7 @@ impl QtJsonGenerator {
     fn generate_optional(&mut self, output: &mut String, inner: &TypeInfo) {
         self.generate(output, inner);
         let ty = inner.qt_type();
-        writeln!(output, "inline QJsonValue toJson(const std::optional<{ty}> &o) {{ return o.has_value() ? toJson(o.value()) : QJsonValue::Undefined; }}").unwrap();
+        writeln!(output, "inline QJsonValue toJson(const std::optional<{ty}> &o) {{ return o.has_value() ? toJson(o.value()) : QJsonValue::Null; }}").unwrap();
         writeln!(
             output,
             "inline bool tryFromJson(const QJsonValue &v, std::optional<{ty}> &out) {{"
@@ -516,7 +516,7 @@ impl Method {
         };
         let docs = if let Some(docs) = &self.docs {
             let docs = docs.split('\n').fold(String::new(), |mut output, s| {
-                let _ = writeln!(output, "   *{s}");
+                writeln!(output, "   *{s}").unwrap();
                 output
             });
             format!("  /**\n{docs}   */")

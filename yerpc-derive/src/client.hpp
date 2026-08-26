@@ -68,11 +68,10 @@ class Transport {
 public:
   using CompletionHandler = std::function<void(const Result<QJsonValue>)>;
   virtual void send(const QString method, const QJsonValue request, CompletionHandler onCompleted) = 0;
+  virtual ~Transport() = default;
 };
 
 class RawClient {
-  std::unique_ptr<Transport> transport_;
-
   template <typename T>
   QFuture<Result<T>> request(const QString method, const QJsonArray params) {
     QFutureInterface<Result<T>> interface;
@@ -107,6 +106,8 @@ class RawClient {
   }
 public:
   RawClient(std::unique_ptr<Transport> t) : transport_{std::move(t)} {}
+
+  std::unique_ptr<Transport> transport_;
 
 #methods
 };
