@@ -2,13 +2,13 @@
 
 #include "types.hpp"
 
+#include <QFuture>
 #include <QString>
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
 
-#include <future>
 #include <memory>
 
 namespace #root_namespace {
@@ -66,38 +66,44 @@ static Result<QJsonValue> parseResult(const QJsonObject& val) {
 
 class Transport {
 public:
-    virtual std::future<Result<QJsonValue>> send(const QString method, const QJsonValue request) = 0;
+  using CompletionHandler = std::function<void(const Result<QJsonValue>)>;
+  virtual void send(const QString method, const QJsonValue request, CompletionHandler onCompleted) = 0;
 };
 
 class RawClient {
   std::unique_ptr<Transport> transport_;
 
   template <typename T>
-  std::future<Result<T>> request(const QString method,
-                                 const QJsonArray params) {
-    std::future<Result<QJsonValue>> inner = transport_->send(method, params);
-    return std::async(
-        std::launch::deferred,
-        [method, inner = std::move(inner)]() mutable -> Result<T> {
-          auto val = inner.get();
-          if constexpr (std::is_void_v<T>) {
-            if (val.error_code)
-              return {method + ": " + val.error_message, val.error_code};
-            return {{}, 0};
-          } else {
-            if (val.error_code)
-              return {{}, method + ": " + val.error_message, val.error_code};
-            T out;
-            if (!tryFromJson(val.result, out)) {
-              return {{},
-                      method + ": Could not parse result " +
-                          QJsonDocument(QJsonArray{val.result})
-                              .toJson(QJsonDocument::Compact),
-                      -32700};
-            }
-            return {out, {}, 0};
-          }
+  QFuture<Result<T>> request(const QString method, const QJsonArray params) {
+    QFutureInterface<Result<T>> interface;
+    interface.reportStarted();
+    transport_->send(method, params,
+        [method, interface](const Result<QJsonValue> val) mutable {
+          interface.reportResult(mapToConcreteType<T>(val, method));
+          interface.reportFinished();
         });
+    return interface.future();
+  }
+
+  template <typename T>
+  static Result<T> mapToConcreteType(const Result<QJsonValue> val, const QString method){
+    if constexpr (std::is_void_v<T>) {
+      if (val.error_code)
+        return {method + ": " + val.error_message, val.error_code};
+      return {{}, 0};
+    } else {
+      if (val.error_code)
+        return {{}, method + ": " + val.error_message, val.error_code};
+      T out;
+      if (!tryFromJson(val.result, out)) {
+        return {{},
+                method + ": Could not parse result " +
+                    QJsonDocument(QJsonArray{val.result})
+                        .toJson(QJsonDocument::Compact),
+                -32700};
+      }
+      return {out, {}, 0};
+    }
   }
 public:
   RawClient(std::unique_ptr<Transport> t) : transport_{std::move(t)} {}

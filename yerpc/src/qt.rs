@@ -507,7 +507,7 @@ impl Method {
         );
         let (output, inner_method) = if !self.is_notification {
             (
-                format!("[[nodiscard]] std::future<Result<{output}>>"),
+                format!("[[nodiscard]] QFuture<Result<{output}>>"),
                 format!("request<{output}>"),
             )
         } else {
