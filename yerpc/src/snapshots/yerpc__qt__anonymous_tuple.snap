@@ -29,7 +29,7 @@ inline bool tryFromJson(const QJsonValue &v, std::tuple<uint32_t, QString> &out)
   if (!tryFromJson(a.at(1), std::get<1>(out))) return false;
   return true;
 }
-inline QJsonValue toJson(const std::optional<std::tuple<uint32_t, QString>> &o) { return o.has_value() ? toJson(o.value()) : QJsonValue::Undefined; }
+inline QJsonValue toJson(const std::optional<std::tuple<uint32_t, QString>> &o) { return o.has_value() ? toJson(o.value()) : QJsonValue::Null; }
 inline bool tryFromJson(const QJsonValue &v, std::optional<std::tuple<uint32_t, QString>> &out) {
     if (v.isUndefined() || v.isNull()) return true;
     std::tuple<uint32_t, QString> val;
