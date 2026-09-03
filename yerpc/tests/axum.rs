@@ -3,6 +3,7 @@ mod tests {
     use axum::{extract::ws::WebSocketUpgrade, response::Response, routing::get, Router};
     use futures_util::{SinkExt, StreamExt};
     use std::net::SocketAddr;
+    use std::path::Path;
     use tokio::net::TcpStream;
     use tokio_tungstenite::client_async;
     use tokio_tungstenite::tungstenite::http::StatusCode;
@@ -77,7 +78,6 @@ mod tests {
         Ok(())
     }
 
-    use std::path::Path;
     pub fn assert_dir_snapshot(prefix: &str, f: impl FnOnce(&Path)) {
         let dir = tempfile::tempdir().unwrap();
         f(dir.path());
