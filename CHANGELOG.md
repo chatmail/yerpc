@@ -2,12 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-# Unreleased
+## 0.7.0 - 2026-09-03
+
 - typescript-client: Remove dependencies on WebSockets npm packages (`@types/ws`, `ws` and `isomorphic-ws`).
 - typescript-client: Set the minimum Node.js version to `22`, because that's the version where support for the standard WebSockets was stabilized.
 - Add `Cargo.lock` to the repo
 - Fix Axum example
-
+- Generate `write_{openrpc,ts_bindings}` functions instead of `#[test]`s
+- Add qt bindings generation
 
 ## 0.6.4 - 2025-04-17
 

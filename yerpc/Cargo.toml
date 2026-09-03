@@ -1,6 +1,6 @@
 [package]
 name = "yerpc"
-version = "0.6.4"
+version = "0.7.0"
 edition = "2021"
 license = "Apache-2.0/MIT"
 repository = "https://github.com/deltachat/yerpc"
@@ -16,7 +16,7 @@ name = "generate-base-types"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-yerpc_derive = { path  = "../yerpc-derive", version = "0.6" }
+yerpc_derive = { path  = "../yerpc-derive", version = "0.7" }
 async-channel = "1.9.0"
 async-lock = "3.4.0"
 async-trait = "0.1.86"
