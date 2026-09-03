@@ -3,6 +3,7 @@ mod tests {
     use axum::{extract::ws::WebSocketUpgrade, response::Response, routing::get, Router};
     use futures_util::{SinkExt, StreamExt};
     use std::net::SocketAddr;
+    use std::path::Path;
     use tokio::net::TcpStream;
     use tokio_tungstenite::client_async;
     use tokio_tungstenite::tungstenite::http::StatusCode;
@@ -75,5 +76,40 @@ mod tests {
             serde_json::from_value(client.send_request("shout", Some(["foo"])).await?)?;
         assert_eq!(res.as_str(), "FOO");
         Ok(())
+    }
+
+    pub fn assert_dir_snapshot(prefix: &str, f: impl FnOnce(&Path)) {
+        let dir = tempfile::tempdir().unwrap();
+        f(dir.path());
+        assert_dir_snapshot_inner(prefix, dir.path());
+    }
+
+    fn assert_dir_snapshot_inner(prefix: &str, dir: &Path) {
+        let mut entries: Vec<_> = std::fs::read_dir(dir)
+            .unwrap()
+            .map(|e| e.unwrap().path())
+            .collect();
+        entries.sort();
+
+        for file_path in entries {
+            let relative = file_path
+                .strip_prefix(dir)
+                .unwrap()
+                .to_string_lossy()
+                .replace('.', "_");
+            let contents = std::fs::read_to_string(&file_path).unwrap();
+            let snapshot_name = format!("{prefix}__{relative}");
+            insta::assert_snapshot!(snapshot_name, contents);
+        }
+    }
+
+    #[test]
+    fn ts_bindings() {
+        assert_dir_snapshot("typescript", |p| write_ts_bindings(p))
+    }
+
+    #[test]
+    fn qt_bindings() {
+        assert_dir_snapshot("qt", |p| write_qt_bindings(p, "my_namespace"))
     }
 }
