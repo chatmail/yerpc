@@ -1,0 +1,39 @@
+---
+source: yerpc/src/qt.rs
+expression: out
+---
+
+inline QJsonValue toJson(const uint32_t &o) { return static_cast<double>(o); }
+inline bool tryFromJson(const QJsonValue &v, uint32_t &out) {
+    if (!v.isDouble()) return false;
+    out = static_cast<uint32_t>(v.toDouble());
+    return true;
+}
+inline QJsonValue toJson(const QString &o) { return {o}; }
+inline bool tryFromJson(const QJsonValue &v, QString &out) {
+    if (!v.isString()) return false;
+    out = v.toString();
+    return true;
+}
+inline QJsonValue toJson(const std::tuple<uint32_t, QString> &o) {
+  QJsonArray a;
+  a.push_back(toJson(std::get<0>(o)));
+  a.push_back(toJson(std::get<1>(o)));
+  return a;
+}
+inline bool tryFromJson(const QJsonValue &v, std::tuple<uint32_t, QString> &out) {
+  if (!v.isArray()) return false;
+  QJsonArray a = v.toArray();
+  if (a.size() != 2) return false;
+  if (!tryFromJson(a.at(0), std::get<0>(out))) return false;
+  if (!tryFromJson(a.at(1), std::get<1>(out))) return false;
+  return true;
+}
+inline QJsonValue toJson(const std::optional<std::tuple<uint32_t, QString>> &o) { return o.has_value() ? toJson(o.value()) : QJsonValue::Null; }
+inline bool tryFromJson(const QJsonValue &v, std::optional<std::tuple<uint32_t, QString>> &out) {
+    if (v.isUndefined() || v.isNull()) return true;
+    std::tuple<uint32_t, QString> val;
+    if (!tryFromJson(v, val)) return false;
+    out = val;
+    return true;
+}

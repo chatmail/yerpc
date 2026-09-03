@@ -5,9 +5,12 @@ use serde::{Deserialize, Serialize};
 
 pub use yerpc_derive::rpc;
 
+pub mod method;
 #[cfg(feature = "openrpc")]
 pub mod openrpc;
+pub mod qt;
 mod requests;
+mod type_info;
 pub mod typescript;
 mod version;
 

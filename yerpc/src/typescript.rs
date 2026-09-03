@@ -6,6 +6,8 @@ use typescript_type_def::{type_expr::TypeInfo, write_definition_file, Definition
 pub use typescript_type_def as type_def;
 pub use typescript_type_def::TypeDef;
 
+use crate::method::Method;
+
 pub fn typedef_to_expr_string<T: TypeDef>(root_namespace: Option<&str>) -> io::Result<String> {
     let mut expr = vec![];
     <T as TypeDef>::INFO.write_ref_expr(&mut expr, root_namespace)?;
@@ -25,38 +27,8 @@ pub fn export_types_to_file<T: TypeDef>(
     Ok(())
 }
 
-pub struct Method {
-    pub is_notification: bool,
-    pub is_positional: bool,
-    pub ts_name: String,
-    pub rpc_name: String,
-    pub args: Vec<(String, &'static TypeInfo)>,
-    pub output: Option<&'static TypeInfo>,
-    pub docs: Option<String>,
-}
-
 impl Method {
-    pub fn new(
-        ts_name: &str,
-        rpc_name: &str,
-        args: Vec<(String, &'static TypeInfo)>,
-        output: Option<&'static TypeInfo>,
-        is_notification: bool,
-        is_positional: bool,
-        docs: Option<&str>,
-    ) -> Self {
-        Self {
-            ts_name: ts_name.to_string(),
-            rpc_name: rpc_name.to_string(),
-            args,
-            output,
-            is_notification,
-            is_positional,
-            docs: docs.map(|d| d.to_string()),
-        }
-    }
-
-    pub fn to_string(&self, root_namespace: Option<&str>) -> String {
+    pub fn to_string_ts(&self, root_namespace: Option<&str>) -> String {
         let (args, call) = if !self.is_positional {
             if let Some((name, ty)) = self.args.first() {
                 (
@@ -103,7 +75,7 @@ impl Method {
         };
         format!(
             "{}\n  public {}({}): {} {{\n    return (this._transport.{}('{}', {} as RPC.Params)) as {};\n  }}\n\n",
-            docs, self.ts_name, args, output, inner_method, self.rpc_name, call, output
+            docs, self.rpc_name_camel, args, output, inner_method, self.rpc_name, call, output
         )
     }
 }

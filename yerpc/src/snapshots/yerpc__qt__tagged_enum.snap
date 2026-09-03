@@ -1,0 +1,63 @@
+---
+source: yerpc/src/qt.rs
+expression: out
+---
+inline QJsonValue toJson(const QString &o) { return {o}; }
+inline bool tryFromJson(const QJsonValue &v, QString &out) {
+    if (!v.isString()) return false;
+    out = v.toString();
+    return true;
+}
+
+inline QJsonValue toJson(const uint32_t &o) { return static_cast<double>(o); }
+inline bool tryFromJson(const QJsonValue &v, uint32_t &out) {
+    if (!v.isDouble()) return false;
+    out = static_cast<uint32_t>(v.toDouble());
+    return true;
+}
+struct FooBar {
+  QString name;
+  uint32_t count;
+};
+inline QJsonValue toJson(const FooBar &o) {
+  QJsonObject j;
+  j["name"] = toJson(o.name);
+  j["count"] = toJson(o.count);
+  return j;
+}
+inline bool tryFromJson(const QJsonValue &v, FooBar &out) {
+  if (!v.isObject()) return false;
+  QJsonObject obj = v.toObject();
+  if (!tryFromJson(obj["name"], out.name)) return false;
+  if (!tryFromJson(obj["count"], out.count)) return false;
+  return true;
+}
+struct FooBaz {
+};
+inline QJsonValue toJson(const FooBaz &o) {
+  QJsonObject j;
+  return j;
+}
+inline bool tryFromJson(const QJsonValue &v, FooBaz &out) {
+  if (!v.isObject()) return false;
+  QJsonObject obj = v.toObject();
+  return true;
+}
+using Foo = std::variant<FooBar, FooBaz>;
+inline QJsonValue toJson(const Foo &o) {
+  QJsonObject j;
+  std::visit(Hidden::overloaded{
+    [&j](FooBar v){ j = toJson(v).toObject(); j["kind"] = QString("Bar"); },
+    [&j](FooBaz v){ j = toJson(v).toObject(); j["kind"] = QString("Baz"); },
+  }, o);
+  return j;
+}
+inline bool tryFromJson(const QJsonValue &v, Foo &out) {
+  if (!v.isObject()) return false;
+  QJsonObject obj = v.toObject();
+  if (!obj.contains("kind") || !obj["kind"].isString()) return false;
+  QString kind = obj.take("kind").toString();
+  if (kind == "Bar") { FooBar v; if (!tryFromJson(obj, v)) return false; out = v; return true; };
+  if (kind == "Baz") { FooBaz v; if (!tryFromJson(obj, v)) return false; out = v; return true; };
+  return false;
+}

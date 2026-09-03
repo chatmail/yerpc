@@ -1,0 +1,168 @@
+#pragma once
+
+#include "types.hpp"
+
+#include <QFuture>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QString>
+
+#include <cstdint>
+#include <utility>
+
+namespace #root_namespace {
+
+struct ResultError {
+  /** Error code of the result. Equals `0` if there is no error. */
+  int32_t error_code = 0;
+
+  /** Error message of the result. Equals an empty string if there is no error.
+   */
+  QString error_message{};
+
+  /** Returns `true` if the result represents an error. */
+  bool isError() const { return error_code != 0; }
+
+  /**
+   * Explicitly discards the result. Used to silence `[[nodiscard]]` warnings
+   */
+  void ignore() const {}
+};
+
+template <typename T> struct [[nodiscard]] Result : ResultError {
+  /* Constructs a successful result containing the given value */
+  static Result<T> ok(T value) { return {{0, {}}, std::move(value)}; }
+
+  /* Constructs an error result with the given error code and message */
+  static Result<T> error(int32_t error_code, QString error_message) {
+    return {{error_code, std::move(error_message)}, {}};
+  }
+
+  /** Value of the result. Is a default constructed value if the result
+   * represents an error. */
+  T value{};
+
+  /**
+   * If the result represents an error, logs a warning with the error details
+   * and the caller's source location. Returns a copy of this result for
+   * chaining.
+   */
+  Result<T> logError(const char *file = __builtin_FILE(),
+                     int line = __builtin_LINE()) const {
+    if (error_code) {
+      qWarning().noquote()
+          << QStringLiteral("Result::logError() from %1:%2 | Error %3: %4")
+                 .arg(QLatin1String(file))
+                 .arg(line)
+                 .arg(error_code)
+                 .arg(error_message);
+    }
+    return *this;
+  }
+
+  /** Return the `value` converted to json */
+  QJsonValue valueToJson() const { return toJson(value); }
+};
+
+template <> struct [[nodiscard]] Result<void> : ResultError {
+  /* Constructs a successful result */
+  static Result<void> ok() { return {{0, {}}}; }
+
+  /* Constructs an error result with the given error code and message */
+  static Result<void> error(int32_t error_code, QString error_message) {
+    return {{error_code, std::move(error_message)}};
+  }
+
+  /**
+   * If the result represents an error, logs a warning with the error details
+   * and the caller's source location. Returns a copy of this result for
+   * chaining.
+   */
+  Result<void> logError(const char *file = __builtin_FILE(),
+                        int line = __builtin_LINE()) const {
+    if (error_code) {
+      qWarning().noquote()
+          << QStringLiteral("Result::logError() from %1:%2 | Error %3: %4")
+                 .arg(QLatin1String(file))
+                 .arg(line)
+                 .arg(error_code)
+                 .arg(error_message);
+    }
+    return *this;
+  }
+};
+
+static Result<QJsonValue> parseResult(const QJsonObject &val) {
+  if (val.contains("error")) {
+    QJsonObject err = val["error"].toObject();
+    QJsonValue error_message = err["message"];
+    int error_code = err["code"].toInt();
+    if (!error_message.isString() || error_code == 0)
+      return Result<QJsonValue>::error(
+          -32700, "Invalid error in response: " +
+                      QJsonDocument(val).toJson(QJsonDocument::Compact));
+    return Result<QJsonValue>::error(error_code, error_message.toString());
+  }
+  if (!val.contains("result"))
+    return Result<QJsonValue>::error(
+        -32700, "Neither error nor result in response: " +
+                    QJsonDocument(val).toJson(QJsonDocument::Compact));
+  return Result<QJsonValue>::ok(val["result"]);
+}
+
+class Transport {
+public:
+  using CompletionHandler = std::function<void(const Result<QJsonValue>)>;
+  virtual void send(const QString method, const QJsonValue request,
+                    CompletionHandler onCompleted) = 0;
+  virtual ~Transport() = default;
+};
+
+class RawClient {
+  template <typename T>
+  QFuture<Result<T>> request(const QString method, const QJsonArray params) {
+    QFutureInterface<Result<T>> interface;
+    interface.reportStarted();
+    transport_->send(method, params,
+                     [method, interface](const Result<QJsonValue> val) mutable {
+                       interface.reportResult(
+                           mapToConcreteType<T>(val, method));
+                       interface.reportFinished();
+                     });
+    return interface.future();
+  }
+
+  template <typename T>
+  static Result<T> mapToConcreteType(const Result<QJsonValue> val,
+                                     const QString method) {
+    if constexpr (std::is_void_v<T>) {
+      if (val.error_code)
+        return Result<void>::error(val.error_code,
+                                   method + ": " + val.error_message);
+      return Result<void>::ok();
+    } else {
+      if (val.error_code)
+        return Result<T>::error(val.error_code,
+                                method + ": " + val.error_message);
+      T out;
+      if (!tryFromJson(val.value, out)) {
+        return Result<T>::error(-32700,
+                                method + ": Could not parse result " +
+                                    QJsonDocument(QJsonArray{val.value})
+                                        .toJson(QJsonDocument::Compact));
+      }
+      return Result<T>::ok(out);
+    }
+  }
+
+public:
+  RawClient(std::unique_ptr<Transport> t) : transport_{std::move(t)} {}
+
+  std::unique_ptr<Transport> transport_;
+
+#methods
+};
+
+}

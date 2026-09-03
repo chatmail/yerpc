@@ -49,3 +49,4 @@ axum = { version = "0.8.1", features = ["ws"] }
 tokio-tungstenite = { version = "0.26.1" }
 tokio = { version = "1.43.0", features = ["rt", "macros"] }
 url = "2.5.4"
+insta = "1.47.2"

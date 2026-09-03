@@ -1,0 +1,22 @@
+---
+source: yerpc/src/qt.rs
+expression: out
+---
+enum class Foo {
+  Bar,
+  Baz
+};
+inline QJsonValue toJson(Foo s) {
+  switch (s) {
+    case Foo::Bar: return "Bar";
+    case Foo::Baz: return "Baz";
+  }
+  return QJsonValue::Undefined;
+}
+inline bool tryFromJson(const QJsonValue &v, Foo &out) {
+  if (!v.isString()) return false;
+  QString s = v.toString();
+  if (s == "Bar") { out = Foo::Bar; return true; }
+  if (s == "Baz") { out = Foo::Baz; return true; }
+  return false;
+}
