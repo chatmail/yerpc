@@ -1,0 +1,5 @@
+---
+source: yerpc/src/swift.rs
+expression: out
+---
+typealias Foo = (UInt32, String)
