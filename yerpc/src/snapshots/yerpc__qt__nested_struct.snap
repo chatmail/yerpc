@@ -32,8 +32,8 @@ inline bool tryFromJson(const QJsonValue &v, int8_t &out) {
 }
 inline QJsonValue toJson(const QMap<QString, int8_t> &o) {
     QJsonObject j;
-    for (auto it = o.constKeyValueBegin(); it != o.constKeyValueEnd(); ++it)
-        j[it->first] = toJson(it->second);
+    for (auto it = o.constBegin(); it != o.constEnd(); ++it)
+        j[it.key()] = toJson(it.value());
     return j;
 }
 inline bool tryFromJson(const QJsonValue &v, QMap<QString, int8_t> &out) {
