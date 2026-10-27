@@ -17,7 +17,7 @@ serde_json = "1.0.138"
 axum = { version = "0.8.1", features = ["ws"] }
 futures = "0.3.31"
 log = "0.4.25"
-async-trait = "0.1.86"
+async-trait = "0.1.92"
 typescript-type-def = { version = "0.5.13", features = ["json_value"] }
 async-broadcast = "0.4.1"
 tokio = { version = "1.43.0", features = ["full"] }
