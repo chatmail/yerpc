@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.7.1 - 2026-10-27
+
+- Update Cargo.lock
+- Upgrade to async-trait@0.1.92
+- Fix issues with older qt and gcc versions
+
 ## 0.7.0 - 2026-09-03
 
 - typescript-client: Remove dependencies on WebSockets npm packages (`@types/ws`, `ws` and `isomorphic-ws`).
