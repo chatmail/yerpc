@@ -19,7 +19,7 @@ name = "generate-base-types"
 yerpc_derive = { path  = "../yerpc-derive", version = "0.7" }
 async-channel = "1.9.0"
 async-lock = "3.4.0"
-async-trait = "0.1.86"
+async-trait = "0.1.92"
 futures = "0.3.31"
 futures-util = "0.3.31"
 log = "0.4.25"
