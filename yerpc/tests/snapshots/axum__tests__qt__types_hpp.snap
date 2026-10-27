@@ -6,13 +6,16 @@ expression: contents
 
 #pragma once
 
-#include <optional>
-#include <cstdint>
-
-#include <QString>
-#include <QJsonValue>
-#include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QMap>
+#include <QPointer>
+#include <QString>
+
+#include <cstdint>
+#include <optional>
+#include <variant>
 
 namespace my_namespace {
 

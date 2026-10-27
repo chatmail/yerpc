@@ -51,13 +51,16 @@ pub fn export_types_to_file<T: TypeDef>(path: &Path, root_namespace: &str) -> io
 
 #pragma once
 
-#include <optional>
-#include <cstdint>
-
-#include <QString>
-#include <QJsonValue>
-#include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QMap>
+#include <QPointer>
+#include <QString>
+
+#include <cstdint>
+#include <optional>
+#include <variant>
 
 namespace {root_namespace} {{
 
@@ -338,10 +341,10 @@ impl QtJsonGenerator {
         writeln!(output, "    QJsonObject j;").unwrap();
         writeln!(
             output,
-            "    for (auto it = o.constKeyValueBegin(); it != o.constKeyValueEnd(); ++it)"
+            "    for (auto it = o.constBegin(); it != o.constEnd(); ++it)"
         )
         .unwrap();
-        writeln!(output, "        j[it->first] = toJson(it->second);").unwrap();
+        writeln!(output, "        j[it.key()] = toJson(it.value());").unwrap();
         writeln!(output, "    return j;").unwrap();
         writeln!(output, "}}").unwrap();
         writeln!(
