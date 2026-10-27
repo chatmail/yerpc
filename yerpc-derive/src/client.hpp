@@ -10,6 +10,7 @@
 #include <QString>
 
 #include <cstdint>
+#include <memory>
 #include <utility>
 
 namespace #root_namespace {
