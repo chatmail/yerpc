@@ -14,6 +14,7 @@ expression: contents
 #include <QString>
 
 #include <cstdint>
+#include <memory>
 #include <utility>
 
 namespace my_namespace {
