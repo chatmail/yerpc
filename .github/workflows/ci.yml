@@ -4,6 +4,8 @@ on:
     - main
   pull_request:
 
+permissions: {}
+
 name: Continuous integration
 
 jobs:
@@ -11,7 +13,9 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run:
           cargo check
 
@@ -19,7 +23,9 @@ jobs:
     name: Test Suite
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run:
           cargo test --features support-axum,support-tungstenite,openrpc
 
@@ -27,7 +33,9 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run:
           cargo fmt --all -- --check
 
@@ -35,6 +43,8 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run:
           cargo clippy -- -D warnings
