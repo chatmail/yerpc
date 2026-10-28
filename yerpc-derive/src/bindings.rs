@@ -4,6 +4,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
     let mut gen_types = vec![];
+    let mut gen_methods_swift = vec![];
     let mut gen_methods_ts = vec![];
     let mut gen_methods_qt = vec![];
     for method in &info.methods {
@@ -50,6 +51,11 @@ pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
         } else {
             quote!(None)
         };
+        gen_methods_swift.push(quote!(
+                let args = vec![#(#gen_args),*];
+                let method = Method::new(#rpc_name_camel, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
+                out.push_str(&method.to_string_swift());
+        ));
         gen_methods_ts.push(quote!(
                 let args = vec![#(#gen_args),*];
                 let method = Method::new(#rpc_name_camel, #rpc_name, args, #gen_output, #is_notification, #is_positional, #docs);
@@ -71,11 +77,54 @@ pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
     all_types.dedup();
     let all_types: Vec<TokenStream> = all_types.into_iter().map(|s| s.parse().unwrap()).collect();
 
+    let swift = swift_impl(&all_types, &gen_methods_swift);
     let ts = ts_impl(&all_types, &gen_methods_ts);
     let qt = qt_impl(&all_types, &gen_methods_qt);
     quote! {
+        #swift
         #ts
         #qt
+    }
+}
+
+fn swift_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenStream {
+    let swift_base = include_str!("client.swift");
+    quote! {
+        /// Generate swift bindings for the JSON-RPC API.
+        pub fn write_swift_bindings(outdir: &::std::path::Path) {
+            use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
+            use ::yerpc::{method::Method, swift::export_types_to_file};
+            use ::std::{fs, path::Path};
+            use ::std::io::Write;
+
+            // Create helper type with all exported types.
+            // #(#gen_definitions)*
+            #[derive(TypeDef)]
+            struct __AllTyps(#(#all_types),*);
+            // Write swift types to file.
+            export_types_to_file::<__AllTyps>(&outdir.join("types.swift")).expect("Failed to write swift out");
+            // remove __AllTyps type from output,
+            // it's only used as a workaround to export all types and is not needed anymore now
+            let new_content = {
+                let string =
+                    ::std::fs::read_to_string(&outdir.join("types.swift")).expect("Failed to find swift out");
+                if let Some(index) = string.find("typealias __AllTyps = ") {
+                    string[..index].to_string()
+                } else {
+                    panic!("did not find __AllTyps in swift out");
+                }
+            };
+            ::std::fs::File::create(&outdir.join("types.swift"))
+                .expect("failed to open swift out")
+                .write_all(new_content.as_bytes())
+                .expect("removing __AllTyps from swift failed");
+
+            // Generate a raw client.
+            let mut out = String::new();
+            #(#gen_methods)*
+            let swift_header = #swift_base.replace("#methods", &out);
+            fs::write(&outdir.join("client.swift"), &swift_header).expect("Failed to write swift bindings");
+        }
     }
 }
 
