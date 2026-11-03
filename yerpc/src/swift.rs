@@ -140,7 +140,7 @@ impl SwiftGenerator {
         if let Some(name) = name {
             writeln!(
                 output,
-                "typealias {name} = ({})",
+                "public typealias {name} = ({})",
                 join_with_comma(elements.iter().map(|ty| ty.swift_type()))
             )
             .unwrap();
@@ -155,7 +155,7 @@ impl SwiftGenerator {
         }
         writeln!(output, "@Codable").unwrap();
         writeln!(output, r#"@CodedAt("kind")"#).unwrap();
-        writeln!(output, "enum {uname} {{",).unwrap();
+        writeln!(output, "public enum {uname} {{",).unwrap();
         for Variant { name, fields } in variants {
             let fields = join_with_comma(
                 fields
@@ -176,7 +176,7 @@ impl SwiftGenerator {
             self.generate(output, ty);
         }
         writeln!(output, "@Codable").unwrap();
-        writeln!(output, "struct {sname} {{").unwrap();
+        writeln!(output, "public struct {sname} {{").unwrap();
         for Field { name, ty } in fields {
             let ty_name = ty.swift_type();
             writeln!(output, "  let {name}: {ty_name}").unwrap();
