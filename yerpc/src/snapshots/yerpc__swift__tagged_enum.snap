@@ -1,0 +1,12 @@
+---
+source: yerpc/src/swift.rs
+expression: out
+---
+@Codable
+@CodedAt("kind")
+public enum Foo {
+  @CodedAs("Bar")
+  case bar(name: String, count: UInt32)
+  @CodedAs("Baz")
+  case baz
+}

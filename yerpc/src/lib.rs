@@ -10,6 +10,7 @@ pub mod method;
 pub mod openrpc;
 pub mod qt;
 mod requests;
+pub mod swift;
 mod type_info;
 pub mod typescript;
 mod version;
