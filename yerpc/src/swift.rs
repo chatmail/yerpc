@@ -59,7 +59,7 @@ pub fn export_types_to_file<T: TypeDef>(path: &Path, root_namespace: &str) -> io
 
 import MetaCodable
 
-enum {root_namespace}:Never {{
+enum {root_namespace} {{
 
 struct CodableTuple2<A: Codable, B: Codable>: Codable {{
     let values: (A, B)
