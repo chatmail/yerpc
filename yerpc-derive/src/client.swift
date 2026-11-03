@@ -18,8 +18,7 @@ extension Transport {
 }
 
 protocol DeltaChat: Sendable {
-  associatedtype T: Transport
-  var transport: T { get }
+  var transport: some Transport { get }
 }
 
 extension DeltaChat {
