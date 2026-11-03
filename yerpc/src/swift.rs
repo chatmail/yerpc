@@ -60,7 +60,7 @@ pub fn export_types_to_file<T: TypeDef>(path: &Path, root_namespace: &str) -> io
 
 import MetaCodable
 
-// swiftlint:disable blanket_disable_command
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable identifier_name type_name line_length
 
 enum {root_namespace} {{
