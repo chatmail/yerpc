@@ -157,15 +157,18 @@ impl SwiftGenerator {
         writeln!(output, r#"@CodedAt("kind")"#).unwrap();
         writeln!(output, "public enum {uname} {{",).unwrap();
         for Variant { name, fields } in variants {
+            writeln!(output, r#"  @CodedAs("{name}")"#).unwrap();
+            let (first_char, rest) = name.split_at(1);
+            let first_char = first_char.to_lowercase();
             let fields = join_with_comma(
                 fields
                     .iter()
                     .map(|field| format!("{}: {}", field.name, field.ty.swift_type())),
             );
             if fields.is_empty() {
-                writeln!(output, "  case {name}").unwrap()
+                writeln!(output, "  case {first_char}{rest}").unwrap()
             } else {
-                writeln!(output, "  case {name}({fields})").unwrap()
+                writeln!(output, "  case {first_char}{rest}({fields})").unwrap()
             };
         }
         writeln!(output, "}}",).unwrap();
