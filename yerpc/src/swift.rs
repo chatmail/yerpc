@@ -36,15 +36,16 @@ impl TypeInfo {
             | TypeInfo::TaggedEnum { name, .. }
             | TypeInfo::StringEnum { name, .. } => name.clone(),
             TypeInfo::Tuple { name, elements } => {
-                let codable_tuple_ty = if elements.len() == 2 {
-                    "CodableTuple2"
-                } else {
-                    unimplemented!("Only two element tuples supported for now. Add more CodableTuple implementations if needed.");
-                };
                 name.clone().unwrap_or_else(|| {
+                    let element_tys = join_with_comma(elements.iter().map(Self::swift_type));
+                    let codable_tuple_ty = if elements.len() == 2 {
+                        "CodableTuple2"
+                    } else {
+                        unimplemented!("Only two element tuples supported for now. Add more CodableTuple implementations if needed. Elements: {}", element_tys);
+                    };
                     format!(
                         "{codable_tuple_ty}<{}>",
-                        join_with_comma(elements.iter().map(Self::swift_type))
+                        element_tys
                     )
                 })
             }
