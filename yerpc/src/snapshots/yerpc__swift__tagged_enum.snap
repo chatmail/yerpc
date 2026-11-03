@@ -4,7 +4,9 @@ expression: out
 ---
 @Codable
 @CodedAt("kind")
-enum Foo {
-  case Bar(name: String, count: UInt32)
-  case Baz
+public enum Foo {
+  @CodedAs("Bar")
+  case bar(name: String, count: UInt32)
+  @CodedAs("Baz")
+  case baz
 }

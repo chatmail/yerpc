@@ -3,7 +3,7 @@ source: yerpc/src/swift.rs
 expression: out
 ---
 @Codable
-struct Foo {
+public struct Foo {
   let bar: [UInt8]
   let baz: [String: Int8]
-};
+}
