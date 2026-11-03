@@ -109,7 +109,7 @@ fn swift_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenSt
                 let string =
                     ::std::fs::read_to_string(&outdir.join("types.swift")).expect("Failed to find swift out");
                 if let Some(index) = string.find("public typealias __AllTyps = ") {
-                    string[..index].to_string()
+                    string[..index].to_string() + "\n}\n"
                 } else {
                     panic!("did not find __AllTyps in swift out");
                 }
