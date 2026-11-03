@@ -187,7 +187,7 @@ impl SwiftGenerator {
             let ty_name = ty.swift_type();
             writeln!(output, "  let {name}: {ty_name}").unwrap();
         }
-        writeln!(output, "}};").unwrap();
+        writeln!(output, "}}").unwrap();
     }
 }
 
