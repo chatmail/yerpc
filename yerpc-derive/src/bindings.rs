@@ -91,7 +91,7 @@ fn swift_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenSt
     let swift_base = include_str!("client.swift");
     quote! {
         /// Generate swift bindings for the JSON-RPC API.
-        pub fn write_swift_bindings(outdir: &::std::path::Path) {
+        pub fn write_swift_bindings(outdir: &::std::path::Path, root_namespace: &str) {
             use ::yerpc::typescript::type_def::{TypeDef, type_expr::TypeInfo, DefinitionFileOptions};
             use ::yerpc::{method::Method, swift::export_types_to_file};
             use ::std::{fs, path::Path};
@@ -102,7 +102,7 @@ fn swift_impl(all_types: &[TokenStream], gen_methods: &[TokenStream]) -> TokenSt
             #[derive(TypeDef)]
             struct __AllTyps(#(#all_types),*);
             // Write swift types to file.
-            export_types_to_file::<__AllTyps>(&outdir.join("types.swift")).expect("Failed to write swift out");
+            export_types_to_file::<__AllTyps>(&outdir.join("types.swift"), root_namespace).expect("Failed to write swift out");
             // remove __AllTyps type from output,
             // it's only used as a workaround to export all types and is not needed anymore now
             let new_content = {
