@@ -35,12 +35,19 @@ impl TypeInfo {
             TypeInfo::Struct { name, .. }
             | TypeInfo::TaggedEnum { name, .. }
             | TypeInfo::StringEnum { name, .. } => name.clone(),
-            TypeInfo::Tuple { name, elements } => name.clone().unwrap_or_else(|| {
-                format!(
-                    "CodableTuple<{}>",
-                    join_with_comma(elements.iter().map(Self::swift_type))
-                )
-            }),
+            TypeInfo::Tuple { name, elements } => {
+                let codable_tuple_ty = if elements.len() == 2 {
+                    "CodableTuple2"
+                } else {
+                    unimplemented!("Only two element tuples supported for now. Add more CodableTuple implementations if needed.");
+                };
+                name.clone().unwrap_or_else(|| {
+                    format!(
+                        "{codable_tuple_ty}<{}>",
+                        join_with_comma(elements.iter().map(Self::swift_type))
+                    )
+                })
+            }
         }
     }
 }
@@ -50,23 +57,26 @@ pub fn export_types_to_file<T: TypeDef>(path: &Path) -> io::Result<()> {
 
 import MetaCodable
 
-struct CodableTuple<each Element: Codable>: Codable {{
-    let values: (repeat each Element)
+struct CodableTuple2<A: Codable, B: Codable>: Codable {
+    let values: (A, B)
 
-    init(_ values: (repeat each Element)) {{
+    init(_ values: (A, B)) {
         self.values = values
-    }}
+    }
 
-    func encode(to encoder: Encoder) throws {{
+    func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
-        repeat try container.encode(each values)
-    }}
+        try container.encode(values.0)
+        try container.encode(values.1)
+    }
 
-    init(from decoder: Decoder) throws {{
+    init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()
-        values = (repeat try container.decode((each Element).self))
-    }}
-}}
+        let a = try container.decode(A.self)
+        let b = try container.decode(B.self)
+        values = (a, b)
+    }
+}
 
 "#
     .to_owned();
