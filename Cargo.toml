@@ -2,5 +2,15 @@
 members = ["yerpc-derive", "yerpc", "examples/tide", "examples/axum"]
 resolver = "3"
 
+[workspace.package]
+version = "0.7.1"
+edition = "2024"
+license = "Apache-2.0/MIT"
+repository = "https://github.com/deltachat/yerpc"
+authors = [
+  "Franz Heinzmann <Frando>",
+  "Contributors to yerpc"
+]
+
 [workspace.lints.rust]
 unsafe_code = "forbid"

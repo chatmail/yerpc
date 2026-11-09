@@ -1,14 +1,12 @@
 [package]
 name = "yerpc_derive"
-version = "0.7.1"
-edition = "2024"
 description = "Proc macros for yerpc"
-license = "Apache-2.0/MIT"
-repository = "https://github.com/deltachat/yerpc"
-authors = [
-  "Franz Heinzmann <Frando>",
-  "Contributors to yerpc"
-]
+
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [lib]
 proc-macro = true
