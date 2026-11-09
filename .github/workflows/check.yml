@@ -116,23 +116,14 @@ jobs:
   msrv:
     # check that we can build using the minimal rust version that is specified by this crate
     runs-on: ubuntu-latest
-    # we use a matrix here just because env can't be used in job names
-    # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
-    strategy:
-      matrix:
-        msrv: ["1.56.1"] # 2021 edition requires 1.56
-    name: ubuntu / ${{ matrix.msrv }}
+    name: ubuntu / msrv
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # tag=v7.0.1
         with:
           submodules: true
-      - name: Install ${{ matrix.msrv }}
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # branch=master
+      - name: cargo install cargo-hack
+        uses: taiki-e/install-action@065d6a08a14e61e89fb0a4c10eecdbdef39c7d8e # tag=v2.85.4
         with:
-          toolchain: ${{ matrix.msrv }}
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # tag=v6.1.0
-        with:
-          path: ~/.cargo
-          key: ${{ runner.os }}-cargo
-      - name: cargo +${{ matrix.msrv }} check
-        run: cargo check
+          tool: cargo-hack
+      - name: cargo msrv check
+        run: cargo hack --feature-powerset --workspace --rust-version check
