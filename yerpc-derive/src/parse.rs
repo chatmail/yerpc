@@ -92,13 +92,11 @@ impl<'s> Input<'s> {
 fn parse_doc_comment(attrs: &[syn::Attribute]) -> Option<String> {
     let mut parts = vec![];
     for attr in attrs {
-        if let syn::Meta::NameValue(meta) = &attr.meta {
-            if let syn::Expr::Lit(expr_lit) = &meta.value {
-                if let syn::Lit::Str(lit_str) = &expr_lit.lit {
+        if let syn::Meta::NameValue(meta) = &attr.meta
+            && let syn::Expr::Lit(expr_lit) = &meta.value
+                && let syn::Lit::Str(lit_str) = &expr_lit.lit {
                     parts.push(lit_str.value());
                 }
-            }
-        }
     }
     if !parts.is_empty() {
         Some(parts.join("\n"))
