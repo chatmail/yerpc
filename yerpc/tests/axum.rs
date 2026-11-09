@@ -1,16 +1,16 @@
 #[cfg(all(test, feature = "support-axum", feature = "support-tungstenite"))]
 mod tests {
-    use axum::{extract::ws::WebSocketUpgrade, response::Response, routing::get, Router};
+    use axum::{Router, extract::ws::WebSocketUpgrade, response::Response, routing::get};
     use futures_util::{SinkExt, StreamExt};
     use std::net::SocketAddr;
     use std::path::Path;
     use tokio::net::TcpStream;
     use tokio_tungstenite::client_async;
-    use tokio_tungstenite::tungstenite::http::StatusCode;
     use tokio_tungstenite::tungstenite::Message;
+    use tokio_tungstenite::tungstenite::http::StatusCode;
     use yerpc::axum::handle_ws_rpc;
     use yerpc::tungstenite::tungstenite_client;
-    use yerpc::{rpc, RpcClient, RpcSession};
+    use yerpc::{RpcClient, RpcSession, rpc};
 
     struct Api;
 

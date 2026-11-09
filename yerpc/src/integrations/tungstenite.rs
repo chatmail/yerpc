@@ -4,7 +4,7 @@ use tokio::{
     io::{AsyncRead, AsyncWrite},
     sync::oneshot,
 };
-use tokio_tungstenite::{tungstenite::Message, WebSocketStream};
+use tokio_tungstenite::{WebSocketStream, tungstenite::Message};
 
 pub fn tungstenite_client<R, S>(
     stream: WebSocketStream<S>,

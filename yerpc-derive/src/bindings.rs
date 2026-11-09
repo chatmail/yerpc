@@ -1,4 +1,4 @@
-use crate::{util::extract_result_ty, Inputs, RpcInfo};
+use crate::{Inputs, RpcInfo, util::extract_result_ty};
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::quote;

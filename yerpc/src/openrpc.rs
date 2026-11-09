@@ -66,8 +66,8 @@ pub struct Components {
     pub schemas: Map<String, SchemaObject>,
 }
 
-pub fn object_schema_to_params<T: JsonSchema>(
-) -> anyhow::Result<(Vec<Param>, Map<String, SchemaObject>)> {
+pub fn object_schema_to_params<T: JsonSchema>()
+-> anyhow::Result<(Vec<Param>, Map<String, SchemaObject>)> {
     let (schema, definitions) = generate_schema::<T>();
     let properties = match schema.object.as_ref() {
         Some(obj) => &obj.properties,

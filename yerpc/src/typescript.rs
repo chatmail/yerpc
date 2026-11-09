@@ -1,7 +1,7 @@
 use std::fmt::Write;
 use std::io;
 use std::path::Path;
-use typescript_type_def::{type_expr::TypeInfo, write_definition_file, DefinitionFileOptions};
+use typescript_type_def::{DefinitionFileOptions, type_expr::TypeInfo, write_definition_file};
 
 pub use typescript_type_def as type_def;
 pub use typescript_type_def::TypeDef;
