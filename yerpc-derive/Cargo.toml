@@ -3,6 +3,7 @@ name = "yerpc_derive"
 description = "Proc macros for yerpc"
 
 version.workspace = true
+rust-version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true

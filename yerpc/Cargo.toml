@@ -3,6 +3,7 @@ name = "yerpc"
 description = "Ergonomic JSON-RPC library for async Rust with Axum support"
 
 version.workspace = true
+rust-version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
