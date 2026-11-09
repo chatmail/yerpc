@@ -8,7 +8,7 @@ pub(crate) fn generate_bindings_impl(info: &RpcInfo) -> TokenStream {
     let mut gen_methods_qt = vec![];
     for method in &info.methods {
         let (is_positional, gen_args) = match &method.input {
-            Inputs::Positional(ref inputs) => {
+            Inputs::Positional(inputs) => {
                 let mut gen_args = vec![];
                 for (i, input) in inputs.iter().enumerate() {
                     let ty = input.ty;

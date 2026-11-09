@@ -31,7 +31,7 @@ fn generate_param(input: &Input, i: usize, definitions: Ident) -> TokenStream {
 
 fn generate_method(method: &RemoteProcedure, definitions: Ident) -> TokenStream {
     let (params, param_structure) = match &method.input {
-        Inputs::Positional(ref inputs) => {
+        Inputs::Positional(inputs) => {
             let params = inputs
                 .iter()
                 .enumerate()

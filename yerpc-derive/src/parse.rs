@@ -83,7 +83,7 @@ impl<'s> Input<'s> {
     }
     fn from_arg(arg: &'s FnArg) -> Option<Self> {
         match arg {
-            FnArg::Typed(ref arg) => Some(Self::new(arg.ty.as_ref(), ident_from_pat(&arg.pat))),
+            FnArg::Typed(arg) => Some(Self::new(arg.ty.as_ref(), ident_from_pat(&arg.pat))),
             FnArg::Receiver(_) => None,
         }
     }
@@ -113,7 +113,7 @@ impl<'s> RemoteProcedure<'s> {
         let name = args.name.unwrap_or_else(|| method.sig.ident.to_string());
         let output = match &method.sig.output {
             ReturnType::Default => None,
-            ReturnType::Type(_, ref ty) => Some(ty.as_ref()),
+            ReturnType::Type(_, ty) => Some(ty.as_ref()),
         };
         let positional = root_attr_args.all_positional || args.positional;
         let mut inputs_iter = method.sig.inputs.iter();
