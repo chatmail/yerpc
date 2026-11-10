@@ -1,5 +1,5 @@
 use futures_util::StreamExt;
-use yerpc::{rpc, RpcSession};
+use yerpc::{RpcSession, rpc};
 
 #[tokio::test]
 async fn basic() -> anyhow::Result<()> {

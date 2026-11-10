@@ -41,7 +41,7 @@ pub async fn handle_rpc<T: RpcServer>(
                     session.handle_incoming(&message).await;
                 }
                 Ok(Message::Binary(_)) => {
-                    return Err(anyhow::anyhow!("Binary messages are not supported."))
+                    return Err(anyhow::anyhow!("Binary messages are not supported."));
                 }
                 Ok(_) => {}
                 Err(err) => return Err(anyhow::anyhow!(err)),

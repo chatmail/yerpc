@@ -1,12 +1,12 @@
 use crate::{
+    Inputs, RpcInfo,
     parse::{Input, RemoteProcedure},
     util::extract_result_ty,
-    Inputs, RpcInfo,
 };
 use convert_case::{Case, Casing};
 use proc_macro2::{Span, TokenStream};
-use quote::quote;
 use quote::ToTokens;
+use quote::quote;
 use syn::Ident;
 
 fn generate_param(input: &Input, i: usize, definitions: Ident) -> TokenStream {
@@ -31,7 +31,7 @@ fn generate_param(input: &Input, i: usize, definitions: Ident) -> TokenStream {
 
 fn generate_method(method: &RemoteProcedure, definitions: Ident) -> TokenStream {
     let (params, param_structure) = match &method.input {
-        Inputs::Positional(ref inputs) => {
+        Inputs::Positional(inputs) => {
             let params = inputs
                 .iter()
                 .enumerate()

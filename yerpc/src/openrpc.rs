@@ -1,4 +1,4 @@
-use schemars::{gen::SchemaSettings, schema::SchemaObject, Map};
+use schemars::{Map, r#gen::SchemaSettings, schema::SchemaObject};
 use serde::Serialize;
 
 pub use schemars as type_def;
@@ -66,8 +66,8 @@ pub struct Components {
     pub schemas: Map<String, SchemaObject>,
 }
 
-pub fn object_schema_to_params<T: JsonSchema>(
-) -> anyhow::Result<(Vec<Param>, Map<String, SchemaObject>)> {
+pub fn object_schema_to_params<T: JsonSchema>()
+-> anyhow::Result<(Vec<Param>, Map<String, SchemaObject>)> {
     let (schema, definitions) = generate_schema::<T>();
     let properties = match schema.object.as_ref() {
         Some(obj) => &obj.properties,
@@ -95,9 +95,9 @@ pub fn generate_schema<T: JsonSchema>() -> (SchemaObject, Map<String, SchemaObje
         s.inline_subschemas = false;
         s.definitions_path = "#/components/schemas/".to_string();
     });
-    let mut gen = settings.into_generator();
-    let schema = gen.subschema_for::<T>();
-    let definitions: Map<String, SchemaObject> = gen
+    let mut g = settings.into_generator();
+    let schema = g.subschema_for::<T>();
+    let definitions: Map<String, SchemaObject> = g
         .take_definitions()
         .into_iter()
         .map(|(k, v)| (k, v.into_object()))

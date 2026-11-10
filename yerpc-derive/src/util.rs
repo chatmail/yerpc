@@ -1,27 +1,23 @@
 use syn::{GenericArgument, PathArguments, Type};
 
 pub fn is_result_ty(ty: &Type) -> bool {
-    if let Type::Path(path) = ty {
-        if let Some(last) = path.path.segments.last() {
-            if last.ident == "Result" {
-                return true;
-            }
-        }
+    if let Type::Path(path) = ty
+        && let Some(last) = path.path.segments.last()
+        && last.ident == "Result"
+    {
+        return true;
     }
     false
 }
 
 pub fn extract_result_ty(ty: &Type) -> &Type {
-    if let Type::Path(path) = ty {
-        if let Some(last) = path.path.segments.last() {
-            if last.ident == "Result" {
-                if let PathArguments::AngleBracketed(ref generics) = last.arguments {
-                    if let Some(GenericArgument::Type(inner_ty)) = generics.args.first() {
-                        return inner_ty;
-                    }
-                }
-            }
-        }
+    if let Type::Path(path) = ty
+        && let Some(last) = path.path.segments.last()
+        && last.ident == "Result"
+        && let PathArguments::AngleBracketed(ref generics) = last.arguments
+        && let Some(GenericArgument::Type(inner_ty)) = generics.args.first()
+    {
+        return inner_ty;
     }
     ty
 }

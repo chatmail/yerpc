@@ -1,4 +1,4 @@
-use crate::{util::is_result_ty, Inputs, RpcInfo};
+use crate::{Inputs, RpcInfo, util::is_result_ty};
 use proc_macro2::TokenStream;
 use quote::quote;
 

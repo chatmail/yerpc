@@ -5,7 +5,7 @@
 use serde::de::{self, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
-use typescript_type_def::{type_expr, TypeDef};
+use typescript_type_def::{TypeDef, type_expr};
 
 /// Protocol Version
 #[derive(Debug, PartialEq, Clone, Copy, Hash, Eq)]
