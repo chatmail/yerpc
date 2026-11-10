@@ -34,20 +34,20 @@ schemars = { version = "0.8.21", optional = true }
 anyhow = { version = "1.0.95", optional = true }
 axum = { version = "0.8.1", features = ["ws"], optional = true }
 tokio-tungstenite = { version = "0.26.1", optional = true }
-tokio = { version = "1.43.0", features = ["rt", "macros"], optional = true }
+tokio = { version = "1.43.0", features = ["macros", "rt", "sync"], optional = true }
 tracing = { version = "0.1.41", optional = true }
 
 [features]
 anyhow_expose = ["anyhow"]
 support-axum = ["axum", "tokio", "anyhow", "tracing"]
 support-tungstenite = ["tokio", "tokio-tungstenite", "anyhow"]
-openrpc = ["schemars", "yerpc_derive/openrpc"]
+openrpc = ["schemars", "anyhow", "yerpc_derive/openrpc"]
 
 [dev-dependencies]
 anyhow = "1.0.95"
 axum = { version = "0.8.1", features = ["ws"] }
 tokio-tungstenite = { version = "0.26.1" }
-tokio = { version = "1.43.0", features = ["rt", "macros"] }
+tokio = { version = "1.43.0", features = ["macros", "rt", "sync"] }
 url = "2.5.4"
 insta = "1.47.2"
 tempfile = "3.27.0"
