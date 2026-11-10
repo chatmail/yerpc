@@ -21,7 +21,11 @@ pub use typescript::TypeDef;
 pub use version::Version;
 
 mod integrations;
-pub use integrations::*;
+
+#[cfg(feature = "support-axum")]
+pub use integrations::axum;
+#[cfg(feature = "support-tungstenite")]
+pub use integrations::tungstenite;
 
 #[async_trait]
 pub trait RpcServer: Sync + Send + 'static {
